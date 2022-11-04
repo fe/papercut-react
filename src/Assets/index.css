@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root,
+#root > div {
+  @apply h-full;
+}
+
+@layer components {
+  select[multiple],
+  input {
+    @apply rounded-lg !important;
+  }
+  select,
+  input {
+    @apply focus:ring-offset-0 focus:ring-0 focus:outline-none focus:border !important;
+  }
+  .light-btn {
+    @apply text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 transition-all duration-200 text-center inline-flex items-center justify-center;
+  }
+}
