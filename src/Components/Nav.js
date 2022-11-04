@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 function Nav() {
-    const [ebat, setEbat] = useState([
+    const [staticEbat, setStaticEbat] = useState([
         '12.5x17.5',
         '14x20',
         '17.5x20',
@@ -28,44 +28,65 @@ function Nav() {
         '33.3x35'
     ]);
 
-    const [optionEbat, setOptionEbat] = useState([]);
+    const [dynamic, setDynamic] = useState([]);
+    const [paper, setPaper] = useState({
+        en: 0,
+        boy: 0
+    });
 
-    const handleChange = (e) => {
-        let selected = [...e.target.selectedOptions].map(o => {
-            return o.value;
+    const dynamicSelectHandler = (e) => {
+        setDynamic([...e.target.selectedOptions].map((item) => {
+            const split = item.value.split('x');
+            return {
+                en: parseFloat(split[0]),
+                boy: parseFloat(split[1])
+            }
+        }));
+    }
+
+    const resetHandler = (e) => {
+        document.getElementById('tabaka').value = '';
+        setDynamic([]);
+    }
+
+    const paperHandler = (e) => {
+        let val = e.target.value.replace(',', '.');
+        setPaper({
+            ...paper,
+            [e.target.name]: parseFloat(val)
         });
-        setOptionEbat(selected);
+        if (val === '') {
+            setPaper({
+                ...paper,
+                [e.target.name]: 0
+            });
+        }
     }
 
     useEffect(() => {
-        if (optionEbat.length > 0) {
-            console.log(optionEbat);
-        }
-    }, [optionEbat]);
+        console.log(dynamic);
+    }, [dynamic]);
+
+    useEffect(() => {
+        console.log(paper);
+    }, [paper]);
 
     return (
         <nav className='col-span-3 bg-gray-100'>
             <div className='px-8 py-8 flex flex-col h-full gap-y-4'>
-                <div className='flex-1 flex flex-col'>
+                <div className='flex-1 flex flex-col mb-2'>
                     <h4 className='text-base font-semibold mb-2'>
-                        Kağıt Tabaka <small className='text-gray-400'>(en/boy)</small>
+                        Standart Boyutlar <small className='text-gray-400'>(<span className='cursor-pointer' onClick={resetHandler}>reset</span>)</small>
                     </h4>
-                    <select name="kagit-tabaka" id="tabaka" className='w-full h-full form-multiselect' onChange={handleChange} multiple>
-                        {ebat.map((x, y) => <option key={y}>{x}</option>)}
+                    <select name="kagit-tabaka" id="tabaka" className='w-full h-full form-multiselect' onChange={dynamicSelectHandler} multiple>
+                        {staticEbat.map((x, y) => <option key={y}>{x}</option>)}
                     </select>
-                </div>
-                <div className='flex-initial flex flex-col'>
-                    <h4 className='text-base font-semibold mb-2'>Özel Boyut Girin</h4>
-                    <div className='flex w-full gap-2 mb-2'>
-                        <input type="text" className='w-full form-input' placeholder='en' />
-                        <input type="text" className='w-full form-input' placeholder='boy' />
-                    </div>
                 </div>
                 <div className='flex-initial flex flex-col'>
                     <h4 className='text-base font-semibold mb-2'>İş Bilgisi</h4>
                     <div className='flex w-full gap-2 mb-2'>
-                        <input type="text" className='w-full form-input' placeholder='en' />
-                        <input type="text" className='w-full form-input' placeholder='boy' />
+                        <input type="number" name="en" className='w-full form-input' onChange={paperHandler} placeholder='en' />
+                        <input type="number" name="boy" className='w-full form-input' onChange={paperHandler} placeholder='boy' />
                     </div>
                 </div>
                 <div className='flex-initial flex flex-col'>
