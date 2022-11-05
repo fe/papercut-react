@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 function Nav({ result, setResult }) {
 
     const API = "http://localhost/papercut-api/";
+    const [spinner, setSpinner] = useState(false);
 
     const [staticEbat] = useState([
         '12.5x17.5',
@@ -65,18 +66,18 @@ function Nav({ result, setResult }) {
         }
     }
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
         if ((paper.w !== 0 && paper.h !== 0) && dynamic.length > 0) {
-
-
+            setSpinner(true);
             const data = new FormData(e.target);
 
-            fetch(API, {
+            await fetch(API, {
                 method: 'POST',
                 body: data,
             }).then(response => response.json())
                 .then(data => {
+                    setSpinner(false);
                     setResult(data);
                 })
                 .catch((error) => {
@@ -85,13 +86,14 @@ function Nav({ result, setResult }) {
 
         } else {
             alert('Please fill all fields');
+            setSpinner(false);
         }
     }
 
     return (
         <nav className='col-span-3 bg-gray-100'>
-            <div className='px-8 py-8 flex flex-col h-full gap-y-4'>
-                <form className='flex flex-col h-full' onSubmit={submitHandler}>
+            <div className='px-8 py-8 flex flex-col h-screen gap-y-4 sticky top-0'>
+                {!spinner && <form className='flex flex-col h-full' onSubmit={submitHandler}>
                     <div className='flex-1 flex flex-col mb-2'>
                         <h4 className='text-base font-semibold mb-2'>
                             Standart Boyutlar <small className='text-gray-400'>(<span className='cursor-pointer' onClick={resetHandler}>reset</span>)</small>
@@ -113,7 +115,17 @@ function Nav({ result, setResult }) {
                             <svg aria-hidden="true" className="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
                         </button>
                     </div>
-                </form>
+                </form>}
+                {spinner && <div id="loading" className='h-full'>
+                    <div className='flex justify-center items-center h-full'>
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                        </svg>
+                        <span className='text-gray-500'>Hesaplanıyor...</span>
+                    </div>
+                </div>}
+
             </div>
         </nav>
     )
