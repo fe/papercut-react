@@ -26,17 +26,10 @@ function Main({ result, setResult }) {
         setPaper(data);
     }, [result]);
 
-    function calculate(item) {
-        let totalArea = item.paper.w * item.paper.h;
-        let paperArea = item.area.w * item.area.h;
-        let percent = 100 - (totalArea / paperArea * 100) + "%";
-        return percent;
-    }
     return (
         <main className='col-span-9 h-full'>
             <div id="canvas" className='flex flex-col h-full'>
                 {paper.map((item, i) => {
-                    let fire = calculate(item);
                     return (
                         <div key={i} className="flex flex-col bg-gray-50 p-8 flex-1 justify-start border-b">
                             <div className='flex gap-2 [&>span]:bg-blue-100 [&>span]:rounded [&>span]:p-2 [&>span]:text-xs [&>span]:font-semibold'>

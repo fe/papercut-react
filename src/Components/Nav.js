@@ -4,7 +4,7 @@ function Nav({ result, setResult }) {
 
     const API = "http://localhost/papercut-api/";
 
-    const [staticEbat, setStaticEbat] = useState([
+    const [staticEbat] = useState([
         '12.5x17.5',
         '14x20',
         '17.5x20',
